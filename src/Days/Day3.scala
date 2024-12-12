@@ -10,16 +10,16 @@ private val DO = "do" + PARENTHESES
 private val DONT = "don't" + PARENTHESES
 private val LONGEST_MUL = MUL.length + 7 + PARENTHESES.length - 1 // longest possible mul instruction, that is mul(abc,def)
 
-object Day3 extends Solution[(Int, Int)]:
+object Day3 extends Solution[Int, Int]:
   private implicit def asInt(bool: Boolean): Int = if bool then 1 else 0
+  private val mulOperandsPattern = """mul\((\d+),(\d+)\)""".r // Capture the operands
 
-  override def solve(inputFile: Iterator[String]): (Int, Int) =
-    // Part 1, uncommented because erm... iterators are mutable
-    val mulOperandsPattern = """mul\((\d+),(\d+)\)""".r // Capture the operands
-    //    val mulOperands = for operands <- inputFile.flatMap(mulOperandsPattern.findAllMatchIn(_))
-    //      yield (operands.group(1).toInt, operands.group(2).toInt) // extract operands into pairs
+  override def solve1(inputFile: Iterator[String]): Int =
+    val mulOperands = for operands <- inputFile.flatMap(mulOperandsPattern.findAllMatchIn(_))
+      yield (operands.group(1).toInt, operands.group(2).toInt) // extract operands into pairs
+    mulOperands.map((l, r) => l * r).sum
 
-    // Part 2, oh dear god this is awful
+  override def solve2(inputFile: Iterator[String]): Int =
     @tailrec
     def reducer(charList: List[Char], isMul: Boolean = true, acc: Int = 0): Int =
       if charList.nonEmpty then
@@ -45,5 +45,4 @@ object Day3 extends Solution[(Int, Int)]:
           case _ => reducer(charList.tail, isMul, acc)
       else
         acc
-    // TODO: refactor solve() into two parts!
-    (153469856, reducer(inputFile.flatten.toList))
+    reducer(inputFile.flatten.toList)

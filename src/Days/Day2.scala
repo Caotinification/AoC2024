@@ -1,7 +1,7 @@
 package org.caotin
 package Days
 
-object Day2 extends Solution[(Int, Int)]:
+object Day2 extends Solution[Int, Int]:
   def getDifference(sequence: Seq[Int]): Seq[Int] =
     sequence.sliding(2).map(pair => pair.tail.head - pair.head).toSeq
 
@@ -19,7 +19,7 @@ object Day2 extends Solution[(Int, Int)]:
       isValid(invalidSeq.take(idx) ++ invalidSeq.drop(idx + 1)) // check for validity by removing one element each time
     ).find(p => p).getOrElse(false) // valid if any subsequence is valid
 
-  override def solve(inputFile: Iterator[String]): (Int, Int) =
+  override def solve1(inputFile: Iterator[String]): Int =
     val sequences = inputFile.map(
       str => str.split(" ").map(x => x.toInt).toSeq // conversion to integer sequence
     ).toVector
@@ -28,4 +28,9 @@ object Day2 extends Solution[(Int, Int)]:
     val (validSequences, invalids) = sequences.partition(isValid)
     val (partials, fullInvalids) = invalids.partition(isPartiallyValid)
     Utils.collectionToFile(fullInvalids)
-    (validSequences.length, validSequences.length + partials.length)
+    validSequences.length // part 1
+    
+    // validSequences.length + partials.length // part 2
+    
+  // this won't ever be implemented. 
+  override def solve2(inputFile: Iterator[String]): Int = ???
